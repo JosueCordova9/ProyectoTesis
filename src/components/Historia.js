@@ -633,9 +633,11 @@ const openDeleteConfirmModal = async (row) => {
               <div style={{border:"2px solid", borderColor:"E0001A" }} />
             </div>
           </Container>
-          <Container style={{maxHeight: "500px"}}>
-            <ModalHeader style={{justifyContent: "center"}}><h3>Obsevación</h3></ModalHeader>
-            <MaterialReactTable table={table2} maxHeight={200} overflowY="scroll"/>
+          <Container>
+            <ModalHeader style={{justifyContent: "center"}}><h3>Observación</h3></ModalHeader>
+            <Container style={{maxHeight: "330px", overflowY: "scroll"}}>
+              <MaterialReactTable table={table2} />
+            </Container>
           </Container>
           <ModalFooter style={{display:"flex", justifyContent: "center", alignItems: "center"}}>
           <Button style={{backgroundColor: "E0001A", color:"black", marginTop: "30px" , paddingLeft: "15px",paddingRight: "15px"}}  onClick={handleCerrarModal}>Cerrar</Button>
