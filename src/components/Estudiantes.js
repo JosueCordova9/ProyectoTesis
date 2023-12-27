@@ -62,10 +62,10 @@ const Estudiantes = () => {
     } else if (!values.ced_est.match(/^[0-9]{1,15}$/)) {
       errors.Cédula = "La cédula debe ser solo números";
     }
-    if (!values.ced_est) {
+    if (!values.nom_est) {
       errors.Nombre = "El nombre es requerido";
     }
-    if (!values.ced_est) {
+    if (!values.ape_est) {
       errors.Apellido = "El apellido es requerido";
     }
     return errors;
@@ -73,15 +73,15 @@ const Estudiantes = () => {
 
   //Create action
   const handleCreateEstudiante = async ({ values, table }) => {
-    const nomProvincia = values?['provincia.nom_prov']: undefined;
-    const provincia = selectProvincias.find(provincia => provincia.nom_prov === nomProvincia);
-    const idProvincia = provincia?['id_prov']: undefined;
-    const nomEtnia = values?['etnia.nom_etn']: undefined;
-    const etnia = selectEtnias.find(etnia => etnia.nom_etn === nomEtnia);
-    const idEtnia = etnia?['id_etn']: undefined;
-    const nomParalelo = values?['paralelo.nom_par']:undefined;
-    const paralelo = selectParalelos.find(paralelo => paralelo.nom_par === nomParalelo);
-    const idParalelo = paralelo?['id_par']: undefined;
+    const nomProvincia = values['provincia.nom_prov'] ? values['provincia.nom_prov']: undefined;
+    const provincia = values['provincia.nom_prov']? selectProvincias.find(provincia => provincia.nom_prov === nomProvincia): undefined;
+    const idProvincia = values['provincia.nom_prov'] ? provincia['id_prov']: undefined;
+    const nomEtnia = values['etnia.nom_etn'] ? values['etnia.nom_etn'] : undefined;
+    const etnia = values['etnia.nom_etn'] ? selectEtnias.find(etnia => etnia.nom_etn === nomEtnia) : undefined;
+    const idEtnia = values['etnia.nom_etn'] ? etnia['id_etn'] : undefined;
+    const nomParalelo = values['paralelo.nom_par'] ? values['paralelo.nom_par'] : undefined;
+    const paralelo = values['paralelo.nom_par'] ? selectParalelos.find(paralelo => paralelo.nom_par === nomParalelo): undefined;
+    const idParalelo = values['paralelo.nom_par']? paralelo['id_par']: undefined;
     const data = {
       ced_est: values.ced_est,
       nom_est: values.nom_est,
@@ -126,15 +126,15 @@ const Estudiantes = () => {
 
   //UPDATE action
   const handleSaveEstudiante = async ({ values, table }) => {
-    const nomProvincia = values?['provincia.nom_prov']: undefined;
-    const provincia = selectProvincias.find(provincia => provincia.nom_prov === nomProvincia);
-    const idProvincia = provincia?['id_prov']: undefined;
-    const nomEtnia = values?['etnia.nom_etn']: undefined;
-    const etnia = selectEtnias.find(etnia => etnia.nom_etn === nomEtnia);
-    const idEtnia = etnia?['id_etn']: undefined;
-    const nomParalelo = values?['paralelo.nom_par']:undefined;
-    const paralelo = selectParalelos.find(paralelo => paralelo.nom_par === nomParalelo);
-    const idParalelo = paralelo?['id_par']: undefined;
+    const nomProvincia = values['provincia.nom_prov'] ? values['provincia.nom_prov']: undefined;
+    const provincia = values['provincia.nom_prov']? selectProvincias.find(provincia => provincia.nom_prov === nomProvincia): undefined;
+    const idProvincia = values['provincia.nom_prov'] ? provincia['id_prov']: undefined;
+    const nomEtnia = values['etnia.nom_etn'] ? values['etnia.nom_etn'] : undefined;
+    const etnia = values['etnia.nom_etn'] ? selectEtnias.find(etnia => etnia.nom_etn === nomEtnia) : undefined;
+    const idEtnia = values['etnia.nom_etn'] ? etnia['id_etn'] : undefined;
+    const nomParalelo = values['paralelo.nom_par'] ? values['paralelo.nom_par'] : undefined;
+    const paralelo = values['paralelo.nom_par'] ? selectParalelos.find(paralelo => paralelo.nom_par === nomParalelo): undefined;
+    const idParalelo = values['paralelo.nom_par']? paralelo['id_par']: undefined;
     const data = {
       id_est: values.id_est,
       ced_est: values.ced_est,

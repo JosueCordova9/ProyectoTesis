@@ -16,11 +16,14 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import Avisos from './Avisos';
 
 const Usuarios = () => {
   const [data, setData] = useState([]);
   const [selectRoles, setSelectRoles] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         const fetchData = async () => {
@@ -62,9 +65,9 @@ const Usuarios = () => {
 
   //Create action
   const handleCreateUsuario = async ({ values, table }) => {
-    const nomRol = values['role.nom_rol'];
-    const rol = selectRoles.find(rol => rol.nom_rol === nomRol);
-    const idRol = rol['id_rol'];
+    const nomRol = values['role.nom_rol'] ? values['role.nom_rol'] : undefined;
+    const rol = values['role.nom_rol'] ? selectRoles.find(role => role.nom_rol === nomRol): undefined;
+    const idRol = values['role.nom_rol'] ? rol['id_rol']: undefined;
     const data = {
       usuario: values.usuario,
       nom_usu: values.nom_usu,
@@ -76,8 +79,8 @@ const Usuarios = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
-      alert(message);
+      }).join(", " + "\n");
+        alert(message);
       return;
     }
     const response = await fetch('/api/create/usuarios',{
@@ -88,7 +91,9 @@ const Usuarios = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/usuarios");
         const data = await response.json();
@@ -97,17 +102,21 @@ const Usuarios = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
+
     table.setCreatingRow(null); //exit creating mode
+
   };
 
 
   //UPDATE action
   const handleSaveUsuario = async ({ values, table }) => {
-    const nomRol = values['role.nom_rol'];
-    const rol = selectRoles.find(rol => rol.nom_rol === nomRol);
-    const idRol = rol['id_rol'];
+    const nomRol = values['role.nom_rol'] ? values['role.nom_rol'] : undefined;
+    const rol = values['role.nom_rol'] ? selectRoles.find(role => role.nom_rol === nomRol): undefined;
+    const idRol = values['role.nom_rol'] ? rol['id_rol']: undefined;
     const data = {
       id_usu: values.id_usu,
       usuario: values.usuario,
@@ -120,14 +129,8 @@ const Usuarios = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
-      alert(message, {
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      });
-      // alert(message);
+      }).join(", "+ "\n");
+      alert(message);
       return;
     }
     const response = await fetch(`/api/update/usuarios/${data.id_usu}`, {
@@ -138,25 +141,13 @@ const Usuarios = () => {
       },
     });
     if (response.status === 200) {
-      alert("Usuario actualizado exitosamente", {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        zIndex: 999,
-        transform: "translate(-50%, -50%)",
-        style: {
-          textAlign: "center",
-          minWidth: 200,
-          minHeight: 100,
-        },
-      });
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Usuario actualizado exitosamente");
     } else {
-      alert("Error al actualizar el usuario", {
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      });
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el usuario");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -169,7 +160,9 @@ const Usuarios = () => {
       });
       
       if (response.status === 200) {
-        alert("Estudiante eliminado exitosamente");
+        setShow(true);
+        setTitle("Aviso");
+        setContent("Usuario eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/usuarios");
           const data = await response.json();
@@ -178,10 +171,16 @@ const Usuarios = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el usuario");
+        setShow(true);
+        setTitle("Aviso");
+        setContent("Error al eliminar el usuario");
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
 
   const columns = useMemo(
@@ -228,7 +227,7 @@ const Usuarios = () => {
         accessorKey: "role.nom_rol",
         header: "Rol",
         editVariant: 'select',
-        editSelectOptions: selectRoles.map((rol) => rol.nom_rol),
+        editSelectOptions: selectRoles.map((role) => role.nom_rol),
         muiEditTextFieldProps: {
           type: 'text',
           required: true,
@@ -252,17 +251,15 @@ const Usuarios = () => {
     renderCreateRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
         <DialogTitle variant="h5" style={{textAlign:"center"}}>Crear Nuevo Usuario</DialogTitle>
-        <DialogContent
-          sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-        >
+        <DialogContent 
+          sx={{ display: 'flex', flexDirection: 'column', gap: '1rem'}}>
           {internalEditComponents}
         </DialogContent>
         <DialogActions style={{justifyContent: "center"}} >
           <MRT_EditActionButtons variant="text" table={table} row={row} />
         </DialogActions>
-      </>
+      </>    
     ),
-    //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
         <DialogTitle variant="h5" style={{textAlign:"center"}}>Editar Usuario</DialogTitle>
@@ -314,6 +311,12 @@ const Usuarios = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+          show={show}
+          title={title}
+          content={content}
+          close={closeAlert}
+        />
 </div>
   )
   

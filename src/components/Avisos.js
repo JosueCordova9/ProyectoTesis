@@ -10,8 +10,8 @@ export default class Avisos extends React.Component {
   render() {
     return (
       <Modal show={this.props.show} centered>
-        <Modal.Header style={{justifyContent: "center"}}>
-          <Modal.Title style={{justifyContent: "center"}}>{this.props.title}</Modal.Title>
+        <Modal.Header style={{justifyContent: "center",  backgroundColor: "black", color: "white"}}>
+          <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
         <div style={{display: "flex",height: "100px", paddingInline: "5em",justifyContent:"center", alignItems:"center"}}>{this.props.content}</div>
         <Modal.Footer style={{justifyContent: 'center', alignItems:"center"}}>

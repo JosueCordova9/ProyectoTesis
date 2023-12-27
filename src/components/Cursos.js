@@ -16,11 +16,15 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Avisos from './Avisos';
 
 
 const Cursos = () => {
   const [data, setData] = useState([]);
   const [selectLectivos, setSelectLectivos] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         const fetchData = async () => {
@@ -53,9 +57,9 @@ const Cursos = () => {
 
   //Create action
   const handleCreateCursos = async ({ values, table }) => {
-    const año = values['año_lectivo.nom_año'];
-    const lectivo = selectLectivos.find(lectivo => lectivo.nom_año === año);
-    const id = lectivo['id_ano'];
+    const año = values['año_lectivo.nom_año'] ? values['año_lectivo.nom_año']: undefined;
+    const lectivo = values['año_lectivo.nom_año'] ? selectLectivos.find(lectivo => lectivo.nom_año === año): undefined;
+    const id = values['año_lectivo.nom_año'] ? lectivo['id_ano']: undefined;
     const dataCurso = {
       nom_cur: values.nom_cur,
       id_año_per: id,
@@ -92,9 +96,9 @@ const Cursos = () => {
 
   //UPDATE action
   const handleSaveCursos = async ({ values, table }) => {
-    const año = values['año_lectivo.nom_año'];
-    const lectivo = selectLectivos.find(lectivo => lectivo.nom_año === año);
-    const id = lectivo['id_ano'];
+    const año = values['año_lectivo.nom_año'] ? values['año_lectivo.nom_año']: undefined;
+    const lectivo = values['año_lectivo.nom_año'] ? selectLectivos.find(lectivo => lectivo.nom_año === año): undefined;
+    const id = values['año_lectivo.nom_año'] ? lectivo['id_ano']: undefined;
     const dataCurso = {
       id_cur: values.id_cur,
       nom_cur: values.nom_cur,
@@ -151,6 +155,10 @@ const Cursos = () => {
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
   const columns = useMemo(
     () => [
@@ -259,6 +267,12 @@ const Cursos = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+          show={show}
+          title={title}
+          content={content}
+          close={closeAlert}
+        />
 </div>
   )
   
