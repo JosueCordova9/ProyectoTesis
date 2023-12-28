@@ -50,7 +50,7 @@ const Representantes = () => {
     }
     if (!values.ced_est_rep) {
       errors.Cédula = "La cédula es requerida";
-    }else if (!values.ced_est.match(/^[0-9]{1,15}$/)) {
+    }else if (!values.ced_est_rep.match(/^[0-9]{1,15}$/)) {
       errors.Cédula = "La cédula debe ser solo números";
     }
     return errors;

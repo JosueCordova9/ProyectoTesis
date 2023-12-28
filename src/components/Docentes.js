@@ -41,7 +41,7 @@ const Docentes = () => {
     const errors = {};
     if (!values.ced_doc) {
       errors.Cédula = "La cédula es requerida";
-    }else if (!values.ced_est.match(/^[0-9]{1,15}$/)) {
+    }else if (!values.ced_doc.match(/^[0-9]{1,15}$/)) {
       errors.Cédula = "La cédula debe ser solo números";
     }
     return errors;
@@ -49,14 +49,14 @@ const Docentes = () => {
 
   //Create action
   const handleCreateDocente = async ({ values, table }) => {
-    const dataDoc = {
+    const data = {
       ced_doc: values.ced_doc,
       nom_doc: values.nom_doc,
       ape_doc: values.ape_doc,
       tel_doc: values.tel_doc,
       dir_doc: values.dir_doc
     };
-    const errors = validateDocente(dataDoc)
+    const errors = validateDocente(data)
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
@@ -66,7 +66,7 @@ const Docentes = () => {
     }
     const response = await fetch('/api/create/docentes',{
       method: 'POST',
-      body: JSON.stringify(dataDoc),
+      body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json'
       }
@@ -93,7 +93,7 @@ const Docentes = () => {
 
   //UPDATE action
   const handleSaveUser = async ({ values, table }) => {
-    const dataDoc = {
+    const data = {
       id_doc: values.id_doc,
       ced_doc: values.ced_doc,
       nom_doc: values.nom_doc,
@@ -101,7 +101,7 @@ const Docentes = () => {
       tel_doc: values.tel_doc,
       dir_doc: values.dir_doc
     };
-    const errors = validateDocente(dataDoc)
+    const errors = validateDocente(data)
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
@@ -109,9 +109,9 @@ const Docentes = () => {
       alert(message);
       return;
     }
-    const response = await fetch(`/api/update/docentes/${dataDoc.id_doc}`, {
+    const response = await fetch(`/api/update/docentes/${data.id_doc}`, {
       method: 'PATCH',
-      body: JSON.stringify(dataDoc),
+      body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -225,7 +225,7 @@ const Docentes = () => {
     //optionally customize modal content
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h4">Editar Docente</DialogTitle>
+        <DialogTitle variant="h5" style={{textAlign:"center"}}>Editar Docente</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
         >

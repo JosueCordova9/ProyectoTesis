@@ -454,7 +454,7 @@ const openDeleteConfirmModal = async (row) => {
     onEditingRowSave: handleSaveAlerta,
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h4">Editar Alerta</DialogTitle>
+        <DialogTitle variant="h5" style={{textAlign:"center"}}>Editar Alerta</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
         >
@@ -558,7 +558,7 @@ const openDeleteConfirmModal = async (row) => {
     ),
     renderEditRowDialogContent: ({ table, row, internalEditComponents }) => (
       <>
-        <DialogTitle variant="h4">Editar Observación</DialogTitle>
+        <DialogTitle variant="h5" style={{textAlign:"center"}}>Editar Observación</DialogTitle>
         <DialogContent
           sx={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}
         >
