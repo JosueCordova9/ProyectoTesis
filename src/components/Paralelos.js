@@ -16,11 +16,15 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Avisos from './Avisos';
 
 const Paralelos = () => {
   const [data, setData] = useState([]);
   const [selectCursos, setSelectCursos] = useState([]);
   const [selectPeriodos, setSelectPeriodos] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         const fetchData = async () => {
@@ -60,26 +64,25 @@ const Paralelos = () => {
     return errors;
   };
 
-  function isDefined(valor) {
-    return valor !== undefined && valor !== null;
-  }
 
   //Create action
   const handleCreateParalelos = async ({ values, table }) => {
-    const Nomcurso = values['curso.nom_cur'];
-    const curso = selectCursos.find(curso => curso.nom_cur === Nomcurso);
-    const Nomperiodo = values['periodo.nom_per'];
-    const periodo = selectPeriodos.find(periodo => periodo.nom_per === Nomperiodo);
+    const Nomcurso = values['curso.nom_cur'] ? values['curso.nom_cur']: undefined;
+    const curso = values['curso.nom_cur'] ? selectCursos.find(curso => curso.nom_cur === Nomcurso): undefined;
+    const idCurso = values['curso.nom_cur'] ? curso['id_cur'] : undefined;
+    const Nomperiodo = values['periodo.nom_per'] ? values['periodo.nom_per']: undefined;
+    const periodo = values['periodo.nom_per'] ?selectPeriodos.find(periodo => periodo.nom_per === Nomperiodo): undefined;
+    const idPeriodo = values['periodo.nom_per'] ? periodo['id_per'] : undefined;
     const data = {
       nom_par: values.nom_par,
-      id_cur_per: isDefined(Nomcurso) ? curso['id_cur'] : null,
-      id_per_per: isDefined(Nomperiodo) ? periodo['id_per'] : null,
+      id_cur_per: idCurso,
+      id_per_per: idPeriodo,
     };
     const errors = validateParalelo(data)
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -91,7 +94,9 @@ const Paralelos = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/paralelos");
         const data = await response.json();
@@ -100,28 +105,32 @@ const Paralelos = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table.setCreatingRow(null); //exit creating mode
   };
 
   //UPDATE action
   const handleSaveParalelos = async ({ values, table }) => {
-    const Nomcurso = values['curso.nom_cur'];
-    const curso = selectCursos.find(curso => curso.nom_cur === Nomcurso);
-    const Nomperiodo = values['periodo.nom_per'];
-    const periodo = selectPeriodos.find(periodo => periodo.nom_per === Nomperiodo);
+    const Nomcurso = values['curso.nom_cur'] ? values['curso.nom_cur']: undefined;
+    const curso = values['curso.nom_cur'] ? selectCursos.find(curso => curso.nom_cur === Nomcurso): undefined;
+    const idCurso = values['curso.nom_cur'] ? curso['id_cur'] : undefined;
+    const Nomperiodo = values['periodo.nom_per'] ? values['periodo.nom_per']: undefined;
+    const periodo = values['periodo.nom_per'] ?selectPeriodos.find(periodo => periodo.nom_per === Nomperiodo): undefined;
+    const idPeriodo = values['periodo.nom_per'] ? periodo['id_per'] : undefined;
     const data = {
       id_par: values.id_par,
       nom_par: values.nom_par,
-      id_cur_per: isDefined(Nomcurso) ? curso['id_cur'] : null,
-      id_per_per: isDefined(Nomperiodo) ? periodo['id_per'] : null,
+      id_cur_per: idCurso,
+      id_per_per: idPeriodo,
     };
     const errors = validateParalelo(data)
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -133,7 +142,9 @@ const Paralelos = () => {
       },
     });
     if (response.status === 200) {
-      alert("Curso actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Paralelo actualizado exitosamente");
       const fetchData = async () => {
         const response = await fetch("/api/read/paralelos");
         const data = await response.json();
@@ -142,7 +153,9 @@ const Paralelos = () => {
     };
     fetchData();
     } else {
-      alert("Error al actualizar el curso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el paralelo");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -156,7 +169,9 @@ const Paralelos = () => {
       });
       
       if (response.status === 200) {
-        alert("Paralelo eliminado exitosamente");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Paralelo eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/paralelos");
           const data = await response.json();
@@ -165,10 +180,16 @@ const Paralelos = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el paralelo");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Error al eliminar el paralelo");
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
   const columns = useMemo(
     () => [
@@ -286,6 +307,12 @@ const Paralelos = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+        show={show}
+        title={title}
+        content={content}
+        close={closeAlert}
+      />
 </div>
   )
   

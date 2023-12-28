@@ -22,6 +22,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ModalHeader } from "react-bootstrap";
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
+import Avisos from './Avisos';
 
 
 const Historia = () => {
@@ -31,6 +32,10 @@ const Historia = () => {
   const [observacion, setObservacion] = useState([]);
   const [alertId, setAlertId] = useState(null);
   const [usuario, setUsuario] = useState(null);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [selectEstudiantes, setSelectEstudiantes] = useState([]);
 
   useEffect(() => {
         const fetchData = async () => {
@@ -38,19 +43,26 @@ const Historia = () => {
             const data = await response.json();
             setData(data.data);
         };
+
+        const fetchEstudiantes = async () => {
+          const response = await fetch("/api/read/estudiantes");
+          const data = await response.json();
+          setSelectEstudiantes(data.data);
+      };
       
       const token = localStorage.getItem('token');
       const decodedToken = jwtDecode(token);
       const user = decodedToken.id;
       setUsuario(user);
       fetchData();
+      fetchEstudiantes();
   }, []);
 
   //ALERTAS
 
   const validateAlerta = (values) => {
     const errors = {};
-    const estudiante = selectEstudiantes.find(estudiante => estudiante.ced_est === values);
+    const estudiante = selectEstudiantes.find(estudiante => estudiante.ced_est === values.ced_est);
     if (!estudiante) {
         errors.Estudiante = "El estudiante con esa cédula no existe";
     }
@@ -96,7 +108,7 @@ const handleSaveAlerta = async ({ values, table }) => {
   if (Object.keys(errors).length > 0) {
     const message = Object.keys(errors).map((field) => {
       return `${field}: ${errors[field]}`;
-    }).join(", ");
+    }).join(", "+ "\n");
     alert(message);
     return;
   }
@@ -108,7 +120,9 @@ const handleSaveAlerta = async ({ values, table }) => {
     },
   });
   if (response.status === 200) {
-    alert("Alerta actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Alerta actualizado exitosamente");
     const fetchData = async () => {
       const response = await fetch("/api/read/alertas");
       const data = await response.json();
@@ -117,7 +131,9 @@ const handleSaveAlerta = async ({ values, table }) => {
   };
   fetchData();
   } else {
-    alert("Error al actualizar la alerta");
+    setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar la alerta");
   }
   table.setEditingRow(null); //exit editing mode
 };
@@ -132,7 +148,9 @@ const openDeleteConfirmModal = async (row) => {
     });
     
     if (response.status === 200) {
-      alert("Alerta eliminada exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Alerta eliminada exitosamente");
       const fetchData = async () => {
         const response = await fetch("/api/read/alertas");
         const data = await response.json();
@@ -141,7 +159,9 @@ const openDeleteConfirmModal = async (row) => {
     };
     fetchData();
     } else {
-      alert("Error al eliminar la alerta");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al eliminar la alerta");
     }
   }
 };
@@ -156,7 +176,9 @@ const openDeleteConfirmModal = async (row) => {
         setObservacion(data.data);
       }
       else{
-        alert("Observacion no encontrada");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Observacion no encontrada");
       }
     };
     fetchObservacion();
@@ -168,7 +190,9 @@ const openDeleteConfirmModal = async (row) => {
         setEstudiante(data.data);
       }
       else{
-        alert("Estudiante no encontrado");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Estudiante no encontrado");
       }
   };
   
@@ -201,7 +225,7 @@ const openDeleteConfirmModal = async (row) => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -213,7 +237,9 @@ const openDeleteConfirmModal = async (row) => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchObservacion = async () => {
         const response = await fetch(`/api/read/observacion/${idAle}`);
         const data = await response.json();
@@ -221,12 +247,16 @@ const openDeleteConfirmModal = async (row) => {
           setObservacion(data.data);
         }
         else{
-          alert("Observacion no encontrada");
+          setShow(true);
+      setTitle("Aviso");
+      setContent("Observacion no encontrada");
         }
       };
       fetchObservacion();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table2.setCreatingRow(null); //exit creating mode
   };
@@ -250,7 +280,7 @@ const openDeleteConfirmModal = async (row) => {
       if (Object.keys(errors).length > 0) {
         const message = Object.keys(errors).map((field) => {
           return `${field}: ${errors[field]}`;
-        }).join(", ");
+        }).join(", "+ "\n");
         alert(message);
         return;
       }
@@ -262,7 +292,9 @@ const openDeleteConfirmModal = async (row) => {
         },
       });
       if (response.status === 200) {
-        alert("Observación actualizada exitosamente");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Observación actualizada exitosamente");
         const fetchObservacion = async () => {
           const response = await fetch(`/api/read/observacion/${idAle}`);
           const data = await response.json();
@@ -270,12 +302,16 @@ const openDeleteConfirmModal = async (row) => {
             setObservacion(data.data);
           }
           else{
-            alert("Observacion no encontrada");
+            setShow(true);
+      setTitle("Aviso");
+      setContent("Observacion no encontrada");
           }
         };
         fetchObservacion();
       } else {
-        alert("Error al actualizar la observación");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar la observación");
       }
       table2.setEditingRow(null);
     };
@@ -289,7 +325,9 @@ const openDeleteConfirmModal = async (row) => {
         });
         
         if (response.status === 200) {
-          alert("Observación eliminado exitosamente");
+          setShow(true);
+      setTitle("Aviso");
+      setContent("Observación eliminado exitosamente");
           const fetchObservacion = async () => {
             const response = await fetch("/api/read/observaciones");
             const data = await response.json();
@@ -297,7 +335,9 @@ const openDeleteConfirmModal = async (row) => {
         };
         fetchObservacion();
         } else {
-          alert("Error al eliminar la observación");
+          setShow(true);
+      setTitle("Aviso");
+      setContent("Error al eliminar la observación");
         }
       }
     };
@@ -305,6 +345,10 @@ const openDeleteConfirmModal = async (row) => {
   const handleCerrarModal = () => {
     setMostrarModal(false);
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
 
   const columns = useMemo(
@@ -564,6 +608,12 @@ const openDeleteConfirmModal = async (row) => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+        show={show}
+        title={title}
+        content={content}
+        close={closeAlert}
+      />
     {mostrarModal && (
       <Modal show={mostrarModal}  onHide={handleCerrarModal} size="xl"  centered>
         <ModalHeader style={{justifyContent: "center"}}><h3>Estudiante</h3></ModalHeader>
@@ -643,7 +693,14 @@ const openDeleteConfirmModal = async (row) => {
           <Button style={{backgroundColor: "E0001A", color:"black", marginTop: "30px" , paddingLeft: "15px",paddingRight: "15px"}}  onClick={handleCerrarModal}>Cerrar</Button>
           </ModalFooter>
         </div>
+        <Avisos 
+        show={show}
+        title={title}
+        content={content}
+        close={closeAlert}
+      />
         </Modal>
+        
       )}
 </div>
   )

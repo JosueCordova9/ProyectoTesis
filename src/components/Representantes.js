@@ -16,18 +16,20 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Avisos from './Avisos';
 
 const Representantes = () => {
   const [data, setData] = useState([]);
   const [selectEstudiantes, setSelectEstudiantes] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         const fetchData = async () => {
             const response = await fetch("/api/read/representantes");
             const data = await response.json();
             setData(data.data);
-            
-
         };
 
       const fetchEstudiantes = async () => {
@@ -89,7 +91,7 @@ const Representantes = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -101,7 +103,9 @@ const Representantes = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/representantes");
         const data = await response.json();
@@ -110,7 +114,9 @@ const Representantes = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table.setCreatingRow(null); //exit creating mode
   };
@@ -150,7 +156,7 @@ const Representantes = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -162,9 +168,13 @@ const Representantes = () => {
       },
     });
     if (response.status === 200) {
-      alert("Representante actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Representante actualizado exitosamente");
     } else {
-      alert("Error al actualizar el representante");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el representante");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -177,7 +187,9 @@ const Representantes = () => {
       });
       
       if (response.status === 200) {
-        alert("Representante eliminado exitosamente");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Representante eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/representantes");
           const data = await response.json();
@@ -186,10 +198,16 @@ const Representantes = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el representante");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Error al eliminar el representante");
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
   const columns = useMemo(
     () => [
@@ -404,6 +422,12 @@ const Representantes = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+        show={show}
+        title={title}
+        content={content}
+        close={closeAlert}
+      />
 </div>
   )
   

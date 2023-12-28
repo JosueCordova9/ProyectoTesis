@@ -4,8 +4,7 @@ import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table"
 import * as XLSX from 'xlsx';
 import Form from "react-bootstrap/Form";
-import file from "../../assets/images/file.png"
-import FileSaver from "file-saver";
+import Avisos from "./Avisos";
 
 
 const Carga = () => {
@@ -14,6 +13,9 @@ const Carga = () => {
     const [propiedades, setPropiedades] = useState([]);
     const [status, setStatus] = useState(false);
     const [selectEstudiantes, setSelectEstudiantes] = useState([]);
+    const [show, setShow] = useState(false);
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
 
     useEffect(() => {
         const fetchEstudiantes = async () => {
@@ -25,15 +27,6 @@ const Carga = () => {
         fetchEstudiantes();
       }, []);
 
-
-      const handleDownload = (event) => {
-        const filePath = "../assets/alerta.xlsx";
-      fetch(filePath)
-        .then((response) => response.blob())
-        .then((blob) => {
-          FileSaver.saveAs(blob, "alerta"); // Cambiar el nombre si lo deseas
-        });
-      };
     
 
     const validateCedulas = (value) => {
@@ -100,7 +93,7 @@ const Carga = () => {
         if (Object.keys(errors).length > 0) {
         const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-        }).join(", ");
+        }).join(", "+ "\n");
         alert(message);
         return;
         }
@@ -126,12 +119,19 @@ const Carga = () => {
             },
           });
           if (response.status === 200) {
-            alert("Guardado exitoso");
+            setShow(true);
+            setTitle("Aviso");
+            setContent("Guardado exitoso");
             window.location.href = "/inicio/alertas/historia";
           }else {
-            alert("Error en el guardado");
+            setShow(true);
+            setTitle("Aviso");
+            setContent("Error en el guardado");
           }
         } 
+      }
+      const closeAlert = () =>{
+        setShow(false);
       }
         return(
             <div style={{
@@ -147,10 +147,6 @@ const Carga = () => {
                         <input style={{marginBottom: "10px"}} type={"file"} className="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="alerta"/>
                         <section style={{display: "flex" ,flexDirection: "row", justifyContent: "space-between"}}>
                         <Button style={{justifyContent: "flex-start"}} type="submit" className="btn btn-secondary">Cargar</Button>
-                        <div style={{color: "E0001A", justifyContent: "flex-end"}}>
-                            IMPORTANTE: Descargar el formato del archivo
-                            <Button onClick={handleDownload} style={{marginLeft: "5px", backgroundColor: "E0001A", borderColor: "E0001A", paddingBottom: "10px"}}> alerta.xlsx <img style={{height: "23px", width: "23px"}} src={file}></img></Button>
-                        </div>
                         </section>
                     </Form>
                     <hr/>
@@ -188,6 +184,12 @@ const Carga = () => {
                         </>
                     }
                 </Container>
+                <Avisos 
+                show={show}
+                title={title}
+                content={content}
+                close={closeAlert}
+        />
             </div>
         );
     }

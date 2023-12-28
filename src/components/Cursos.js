@@ -68,7 +68,7 @@ const Cursos = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -80,7 +80,9 @@ const Cursos = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/cursos");
         const data = await response.json();
@@ -89,7 +91,9 @@ const Cursos = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table.setCreatingRow(null); //exit creating mode
   };
@@ -108,7 +112,7 @@ const Cursos = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -120,7 +124,9 @@ const Cursos = () => {
       },
     });
     if (response.status === 200) {
-      alert("Curso actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Curso actualizado exitosamente");
       const fetchData = async () => {
         const response = await fetch("/api/read/cursos");
         const data = await response.json();
@@ -128,7 +134,9 @@ const Cursos = () => {
     };
     fetchData();
     } else {
-      alert("Error al actualizar el curso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el curso");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -142,7 +150,9 @@ const Cursos = () => {
       });
       
       if (response.status === 200) {
-        alert("Curso eliminado exitosamente");
+        setShow(true);
+        setTitle("Aviso");
+        setContent("Curso eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/cursos");
           const data = await response.json();
@@ -151,7 +161,9 @@ const Cursos = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el curso");
+        setShow(true);
+        setTitle("Aviso");
+        setContent("Error al eliminar el curso");
       }
     }
   };

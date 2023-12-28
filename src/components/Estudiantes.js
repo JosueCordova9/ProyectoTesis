@@ -16,12 +16,16 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Avisos from './Avisos';
 
 const Estudiantes = () => {
   const [data, setData] = useState([]);
   const [selectEtnias, setSelectEtnias] = useState([]);
   const [selectProvincias, setSelectProvincias] = useState([]);
   const [selectParalelos, setSelectParalelos] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         //READ Action
@@ -97,7 +101,7 @@ const Estudiantes = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -109,7 +113,9 @@ const Estudiantes = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/estudiantes");
         const data = await response.json();
@@ -118,7 +124,9 @@ const Estudiantes = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table.setCreatingRow(null); //exit creating mode
   };
@@ -151,7 +159,7 @@ const Estudiantes = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -163,9 +171,13 @@ const Estudiantes = () => {
       },
     });
     if (response.status === 200) {
-      alert("Estudiante actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Estudiante actualizado exitosamente");
     } else {
-      alert("Error al actualizar el estudiante");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el estudiante");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -178,7 +190,9 @@ const Estudiantes = () => {
       });
       
       if (response.status === 200) {
-        alert("Estudiante eliminado exitosamente");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Estudiante eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/estudiantes");
           const data = await response.json();
@@ -187,10 +201,16 @@ const Estudiantes = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el estudiante");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Error al eliminar el estudiante");
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
   const columns = useMemo(
     () => [
@@ -346,6 +366,12 @@ const Estudiantes = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+          show={show}
+          title={title}
+          content={content}
+          close={closeAlert}
+        />
 </div>
   )
 }

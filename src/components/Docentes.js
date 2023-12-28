@@ -16,9 +16,13 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Avisos from './Avisos';
 
 const Docentes = () => {
   const [data, setData] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         //READ Action
@@ -56,7 +60,7 @@ const Docentes = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -68,7 +72,9 @@ const Docentes = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/docentes");
         const data = await response.json();
@@ -77,7 +83,9 @@ const Docentes = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table.setCreatingRow(null); //exit creating mode
   };
@@ -97,7 +105,7 @@ const Docentes = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -109,9 +117,13 @@ const Docentes = () => {
       },
     });
     if (response.status === 200) {
-      alert("Docente actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Docente actualizado exitosamente");
     } else {
-      alert("Error al actualizar el docente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el docente");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -124,7 +136,9 @@ const Docentes = () => {
       });
       
       if (response.status === 200) {
-        alert("Docente eliminado exitosamente");
+        setShow(true);
+        setTitle("Aviso");
+        setContent("Docente eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/docentes");
           const data = await response.json();
@@ -133,10 +147,16 @@ const Docentes = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el docente");
+        setShow(true);
+        setTitle("Aviso");
+        setContent("Error al eliminar el docente");
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
 
   const columns = useMemo(
@@ -256,6 +276,12 @@ const Docentes = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+          show={show}
+          title={title}
+          content={content}
+          close={closeAlert}
+        />
 </div>
   )
 }

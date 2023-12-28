@@ -18,10 +18,14 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Avisos from './Avisos';
 
 
 const Lectivo = () => {
   const [data, setData] = useState([]);
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
   useEffect(() => {
         const fetchData = async () => {
@@ -49,7 +53,7 @@ const Lectivo = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -61,7 +65,9 @@ const Lectivo = () => {
       }
     });
     if (response.status === 200) {
-      alert("Guardado exitoso");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Guardado exitoso");
       const fetchData = async () => {
         const response = await fetch("/api/read/lectivos");
         const data = await response.json();
@@ -70,7 +76,9 @@ const Lectivo = () => {
     };
     fetchData();
     } else {
-      alert("Error en el guardado");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error en el guardado");
     }
     table.setCreatingRow(null); //exit creating mode
   };
@@ -85,7 +93,7 @@ const Lectivo = () => {
     if (Object.keys(errors).length > 0) {
       const message = Object.keys(errors).map((field) => {
         return `${field}: ${errors[field]}`;
-      }).join(", ");
+      }).join(", "+ "\n");
       alert(message);
       return;
     }
@@ -97,9 +105,13 @@ const Lectivo = () => {
       },
     });
     if (response.status === 200) {
-      alert("Lectivo actualizado exitosamente");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Lectivo actualizado exitosamente");
     } else {
-      alert("Error al actualizar el lectivo");
+      setShow(true);
+      setTitle("Aviso");
+      setContent("Error al actualizar el lectivo");
     }
     table.setEditingRow(null); //exit editing mode
   };
@@ -112,7 +124,9 @@ const Lectivo = () => {
       });
       
       if (response.status === 200) {
-        alert("Lectivo eliminado exitosamente");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Lectivo eliminado exitosamente");
         const fetchData = async () => {
           const response = await fetch("/api/read/lectivos");
           const data = await response.json();
@@ -121,10 +135,16 @@ const Lectivo = () => {
       };
       fetchData();
       } else {
-        alert("Error al eliminar el lectivo");
+        setShow(true);
+      setTitle("Aviso");
+      setContent("Error al eliminar el lectivo");
       }
     }
   };
+
+  const closeAlert = () =>{
+    setShow(false);
+  }
 
   const columns = useMemo(
     () => [
@@ -215,8 +235,6 @@ const Lectivo = () => {
   return(
   <div style={{
     display: "flex",
-    // justifyContent: "center",
-    // alignItems: 'center',
     height: "86%",
     flexDirection: "column",
   }}>
@@ -226,6 +244,12 @@ const Lectivo = () => {
     <Container style={{ borderRadius: "25px", border: "2px solid", borderColor:"E4E2E2", backgroundColor: 'E4E2E2', padding: "15px"}}>
     <MaterialReactTable table={table} />
     </Container>
+    <Avisos 
+        show={show}
+        title={title}
+        content={content}
+        close={closeAlert}
+      />
 </div>
   )
   
