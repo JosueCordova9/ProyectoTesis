@@ -231,7 +231,7 @@ const Docentes = () => {
         >
           {internalEditComponents} {/* or render custom edit components here */}
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{justifyContent: "center"}}>
           <MRT_EditActionButtons variant="secondary" table={table} row={row} />
         </DialogActions>
       </>

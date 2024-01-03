@@ -3,14 +3,29 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
+// const cookieParser = require('cookie-parser');
+// const jwtDecode = require("jwt-decode");
 
 
 //body-parser
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
+//cookie-parser
+// app.use(cookieParser());
+
 //static web server
 app.use(express.static(path.join(__dirname,'dist')));
+
+// function checkAuth(req, res, next) {
+
+//     const token = localStorage.getItem("token");
+//     if (token) {
+//       next();
+//     } else {
+//       res.status(401).send('Unauthorized');
+//     }
+//   }
 
 
 //route
